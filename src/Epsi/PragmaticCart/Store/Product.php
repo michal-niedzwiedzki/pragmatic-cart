@@ -1,7 +1,14 @@
 <?php
 
-namespace Epsi\PragmaticCart\Store
+namespace Epsi\PragmaticCart\Store;
 
+/**
+ * Product in store
+ *
+ * Represents real product available for puchase by customer.
+ *
+ * @author Michał Rudnicki <michal@epsi.pl>
+ */
 class Product {
 
     private $name;
@@ -14,6 +21,10 @@ class Product {
         $this->price = $price;
         $this->unitsInBulk = $unitsInBulk;
         $this->priceInBulk = $priceInBulk;
+    }
+
+    public function getId() {
+        return $this->name; // TODO: implement proper indexing some other day
     }
 
     public function getName() {
