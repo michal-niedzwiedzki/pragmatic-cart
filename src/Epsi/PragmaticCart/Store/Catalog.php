@@ -5,14 +5,12 @@ namespace Epsi\PragmaticCart\Store;
 /**
  * Products catalog
  *
- * A singleton holding a collection of products.
+ * Holds collection of products indexed by product id [int => Product]
  * Can save and load to/from persistent storage.
  *
  * @author Michał Rudnicki <michal@epsi.pl>
  */
 final class Catalog {
-
-    const CATALOG_FILE = "var/catalog.json";
 
     /**
      * Singleton instance
@@ -43,48 +41,45 @@ final class Catalog {
     }
 
     public function getProductById($productId) {
-        foreach ($this->products as $product) {
-            if ($product->getid() == $productId) {
-                return $product;
-            }
+        if (!isset($this->products[$productId])) {
+            throw new Exception("Product {$productId} not in catalog", Exception::E_CATALOG);
         }
-        throw new Exception("Product {$productId} not in catalog", Exception::E_CATALOG);
+        return $this->products[$productId];
     }
 
     public function load($file) {
         // check if catalog file exists
-        $file or $file = self::CATALOG_FILE;
         if (!is_readable($file)) {
             throw new Exception("Could not open {$file}", Exception::E_IMPORT);
         }
 
         // check if valid JSON format
         $json = file_get_contents($file);
-        $items = json_decode($json, true);
-        if (!is_array($items)) {
+        $products = json_decode($json, true);
+        if (!is_array($products)) {
             throw new Exception("File {$file} does not contain valid JSON array", Exception::E_IMPORT);
         }
 
         // import products
-        foreach ($items as $i => $item) {
-            if (!is_array($item)) {
+        foreach ($products as $i => $p) {
+            if (!is_array($p)) {
                 throw new Exception("Array expected at position #{$i} in {$file}", Exception::E_IMPORT);
             }
-            $product = Product::importFromArray($item);
+            $product = Product::import($item);
             $productId = $product->getId();
             $this->products[$productId] = $product;
         }
         return $this;
     }
 
-    public function save($file = null) {
-        $file or $file = self::CATALOG_FILE;
-        $items = [];
+    public function save($file) {
+        $products = [];
         foreach ($this->products as $product) {
-            $items[] = $product->exportIntoArray();
+            $products[] = $product->exportIntoArray();
         }
-        $json = json_encode($items, JSON_PRETTY_PRINT);
-        file_put_contents($file);
+        $json = json_encode($products, JSON_PRETTY_PRINT);
+        file_put_contents($file, $json);
+        return $this;
     }
 
     public function purge() {

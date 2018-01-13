@@ -5,58 +5,57 @@ namespace Epsi\PragmaticCart\Checkout;
 final class Quote {
 
     private $cart;
-    private $productPromos = [];
-    private $purchasePromos = [];
-    private $lineItemTotals = [];
-    private $grandTotal;
+
+    /**
+     * List of available promotions
+     * @var \Epsi\PragmaticCart\Promo\Promo[]
+     */
+    private $availablePromos = [];
+
+    /**
+     * List of applicable promotions
+     * @var \Epsi\PragmaticCart\Promo\Promo[]
+     */
+    private $applicablePromos = [];
+
+    private $purchaseTotal = 0;
+    private $discount = 0;
+    private $grandTotal = 0;
+
+    private $calculated = false;
 
     public function __construct(Cart $cart) {
         $this->cart = $cart;
     }
 
-    public function getQuantity(Product $product) {
-        return $this->cart->getQuantity();
+    public function getProductQuantity(Product $product) {
+        return $this->cart->getQuantity($product);
     }
 
-    public function getPromos(Product $product) {
-        $productId = $product->getId();
-        if (isset($this->productPromos[$productId])) {
-            return $this->productPromos[$productId];
-        }
-        return [];
+    public function getProductPromos(Product $product) {
+        return $this->cart->getPromos($product);
     }
 
-    public function calculate() {
-        $catalog = Catalog::getInstance();
-        $promos = Promo::getRegisteredPromos();
+    public function getAvailablePromos() {
+        return $this->promos;
+    }
 
-        // apply line item promos
-        $this->lineItemTotals = [];
-        foreach ($cart as $productId) {
-            $product = $catalog->getProductById($productId);
-            $this->lineItemTotals[$productId] = $product->getPrice() * $cart->getQuantity($product);
-            foreach ($promos as $promo) {
-                if ($promo->isEligibleOnProduct($this, $product)) {
-                    $this->productPromos[$productId] = $promo;
-                    $this->lineItemTotals[$productId] = $promo->getLineItemTotalForProduct($this, $product);
-                }
+    public function calculateDiscount() {
+        // obtain purchase total reduced by applicable line item promos
+        $this->purchaseTotal = $this->cart->getTotal();;
+        $this->grandTotal = $this->purchaseTotal;
+
+        // apply purchase promos
+        $this->applicablePromos = [];
+        $this->discount = 0;
+        foreach ($this->availablePromos as $promo) {
+            $discount = $promo->getCartDiscount($this);
+            if ($discount > 0) {
+                $this->applicablePromos[] = $promo;
+                $this->grandTotal = ($discount < $this->grandTotal) ? ($this->grandTotal - $discount) : 0;
             }
         }
-
-        // apply entire purchase promos
-        foreach ($promos as $promo) {
-            if ($promo->isEligibleOnPurchase($this)) {
-                $this->purchasePromos[] = $promo;
-            }
-        }
-
-        $receipt = new Receipt($cart);
-        foreach ($cart as $productId) {
-            $product = $catalog->getProductById($productId);
-            $quantity = $cart->getQuantity($product);
-            $receipt->addLineItem($product, $quantity,
-        }
-        $receipt->addLineItem
-}
+        $this->calculated = true;
+    }
 
 }

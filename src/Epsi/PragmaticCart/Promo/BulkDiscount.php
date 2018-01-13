@@ -23,7 +23,8 @@ final class BulkDiscount extends Promo {
      * @param \Epsi\PragmaticCart\Store\Product $target product the promo applies to
      * @param boolean $exclusive flag to make the promo only available as the only one on a product
      */
-    public function __construct(Product $target, $exclusive) {
+    public function __construct($description, Product $target, $exclusive) {
+        parent::__construct($description);
         $this->target = $target;
         $this->exclusive = $exclusive;
     }

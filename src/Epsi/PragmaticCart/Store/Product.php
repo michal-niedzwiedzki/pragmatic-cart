@@ -43,11 +43,11 @@ class Product {
         return $this->priceInBulk;
     }
 
-    public static function importFromArray(array $item) {
-        return new Product($item["name"], $item["price"], $price["unit"], $price["specialPrice"]);
+    public static function import(array $p) {
+        return new Product($p["name"], $p["price"], $p["unit"], $p["specialPrice"]);
     }
 
-    public function exportIntoArray() {
+    public function export() {
         return [
             "name" => $this->name,
             "price" => $this->price,

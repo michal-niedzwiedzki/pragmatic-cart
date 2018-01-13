@@ -5,66 +5,40 @@ namespace Epsi\PragmaticCart\Promo;
 abstract class Promo {
 
     /**
-     * Registry of all promos in use
-     * @var \Epsi\PragmaticCart\Promo\Promo[]
+     * Promo description to be shown on receipt
+     * @var string
      */
-    private static $registeredPromos = [];
+    protected $description;
 
     /**
      * Constructor
      */
-    public function __construct() {
-        Promo::$registeredPromos[] = $this;
+    public function __construct($description) {
+        $this->description = $description;
+    }
+
+    public function getDescription() {
+        return $this->description;
     }
 
     /**
-     * Return all registered promos
+     * Return discount amount for given line item
      *
-     * @var \Epsi\PragmaticCart\Promo\Promo[]
-     */
-    public static function getRegisteredPromos() {
-        return Promo::$registeredPromos;
-    }
-
-    /**
-     * Return whether promo is eligible on given product
-     *
-     * @param \Epsi\PragmaticCart\Checkout\Quote $quote to work on
-     * @param \Epsi\PragmaticCart\Store\Product $subject being under price review
-     */
-    public function isEligibleOnProduct(Quote $quote, Product $subject) {
-        return false;
-    }
-
-    /**
-     * Return whether promo is eligible on entire purchase
-     *
-     * @param \Epsi\PragmaticCart\Checkout\Quote $quote to work on
-     */
-    public function isEligibleOnPurchase(Quote $quote, Product $subject) {
-        return false;
-    }
-
-    /**
-     * Return updated total price for line item with given product
-     *
-     * @param \Epsi\PragmaticCart\Checkout\Quote $quote to work on
-     * @param \Epsi\PragmaticCart\Store\Product $subject being under price review
+     * @param \Epsi\PragmaticCart\Checkout\LineItem $item
      * @return int
      */
-    public function getLineItemTotalForProduct(Quote $quote, Product $subject) {
-        throw new Exception("Discount logic not implemented", Exception::E_PROMO);
+    public function getLineItemDiscount(LineItem $item) {
+        return 0;
     }
 
     /**
-     * Return updated grand total price for entire quote
+     * Return discount amount for entire cart
      *
-     * @param \Epsi\PragmaticCart\Checkout\Quote $quote to work on
-     * @param \Epsi\PragmaticCart\Store\Product $subject being under price review
+     * @param \Epsi\PragmaticCart\Checkout\Cart $cart to discount
      * @return int
      */
-    public function getGrandTotalForPurchase(Quote $quote, Product $subject) {
-        throw new Exception("Discount logic not implemented", Exception::E_PROMO);
+    public function getCartDiscount(Quote $subject) {
+        return 0;
     }
 
 }
