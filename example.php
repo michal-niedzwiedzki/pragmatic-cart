@@ -20,17 +20,19 @@ $promos = [
     new BulkDiscount("Bulk discount", $catalog->getProductById("B"), false),
     new BulkDiscount("Bulk discount", $catalog->getProductById("C"), false),
     new BulkDiscount("Bulk discount", $catalog->getProductById("D"), false),
-//    new BundleDiscount("2 items bundle", [$catalog->getProductById("A"), $catalog->getProductById("B")], 10),
-//    new BundleDiscount("4 items bundle", [$catalog->getProductById("A"), $catalog->getProductById("B"), $catalog->getProductById("C"), $catalog->getProductById("D")], 30),
-//    new PercentDiscount("Heavy cart discount", 600, 10),
+    new BundleDiscount("2 items bundle", [$catalog->getProductById("A"), $catalog->getProductById("B")], 10),
+    new BundleDiscount("4 items bundle", [$catalog->getProductById("A"), $catalog->getProductById("B"), $catalog->getProductById("C"), $catalog->getProductById("D")], 30),
+    new PercentDiscount("Heavy cart discount", 600, 10),
 ];
 // TODO: move manual promo configuration to a config file
 
 // create cart initiated with available promotions and throw in some products
 $cart = new Cart($promos);
 $cart->add($catalog->getProductById("A"), 4);
-//$cart->add($catalog->getProductById("B"), 3);
+$cart->add($catalog->getProductById("B"), 3);
+$cart->add($catalog->getProductById("C"), 200);
 
 // get a recepit from and print it
 $receipt = $cart->getReceipt();
-print_r($receipt);
+print(json_encode($receipt, JSON_PRETTY_PRINT));
+print("\n");

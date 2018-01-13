@@ -70,6 +70,14 @@ final class Cart implements Quote {
         return $this->lineItems;
     }
 
+    public function getQuantityOf(Product $product) {
+        $productId = $product->getId();
+        if (!isset($this->lineItems[$productId])) {
+            return 0;
+        }
+        return $this->lineItems[$productId]->getQuantity();
+    }
+
     /**
      * Add product to cart in given quantity and return self
      *
@@ -111,12 +119,12 @@ final class Cart implements Quote {
 
     public function getDiscount() {
         $this->calculated or $this->calculate();
-
+        return $this->discount;
     }
 
     public function getTotal() {
         $this->calculated or $this->calculate();
-        return $this->amount - $this->discount;
+        return ($this->amount > $this->discount) ? ($this->amount - $this->discount) : 0;
     }
 
     public function getAvailablePromos() {
@@ -124,17 +132,19 @@ final class Cart implements Quote {
     }
 
     public function getApplicablePromos() {
-        $this->calculated or $this->calculateDiscount();
+        $this->calculated or $this->calculate();
         return $this->applicablePromos;
     }
 
     protected function calculate() {
+        // set flag to prevent needless recalculation and/or infinite loop
+        $this->calculated = true;
+
         // collect line item amounts to calculate amount
         $this->amount = 0;
         foreach ($this->lineItems as $lineItem) {
-            $this->amount += $lineItem->getTotalAmount();
+            $this->amount += $lineItem->getTotal();
         }
-        $this->grandTotal = $this->purchaseTotal;
 
         // apply purchase promos to calculate discount
         $this->applicablePromos = [];
@@ -142,17 +152,20 @@ final class Cart implements Quote {
         foreach ($this->availablePromos as $promo) {
             $discount = $promo->getCartDiscount($this);
             if ($discount > 0) {
+                $this->discount += $discount;
                 $this->applicablePromos[] = $promo;
-                $this->grandTotal = ($discount < $this->grandTotal) ? ($this->grandTotal - $discount) : 0;
             }
         }
-
-        // set flag to prevent needless recalculation
-        $this->calculated = true;
     }
 
     public function getReceipt() {
-        $receipt = [];
+        $receipt = [
+            "items" => [],
+            "promos" => [],
+            "amount" => $this->getAmount(),
+            "discount" => $this->getDiscount(),
+            "total" => $this->getTotal(),
+        ];
         $i = 0;
         foreach ($this->lineItems as $lineItem) {
             $p = [];
@@ -162,7 +175,7 @@ final class Cart implements Quote {
                     "discount" => -$promo->getLineItemDiscount($lineItem),
                 ];
             }
-            $receipt[] = [
+            $receipt["items"][] = [
                 "item" => ++$i,
                 "name" => $lineItem->getProduct()->getName(),
                 "price" => $lineItem->getProduct()->getPrice(),
@@ -173,6 +186,14 @@ final class Cart implements Quote {
                 "promos" => $p,
             ];
         }
+
+        foreach ($this->getApplicablePromos() as $n => $promo) {
+            $receipt["promos"][] = [
+                "description" => $promo->getDescription(),
+                "discount" => -$promo->getCartDiscount($this),
+            ];
+        }
+
         return $receipt;
     }
 }

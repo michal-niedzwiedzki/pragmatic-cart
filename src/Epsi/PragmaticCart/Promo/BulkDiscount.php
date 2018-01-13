@@ -37,6 +37,15 @@ final class BulkDiscount extends Promo {
     }
 
     /**
+     * Return promo description
+     *
+     * @return string
+     */
+    public function getDescription() {
+        return "{$this->description} ({$this->target->getUnitsInBulk()} for {$this->target->getPriceInBulk()})";
+    }
+
+    /**
      * Return discount amount for given line item
      *
      * Will only apply special price for multitudes of threshold quantity.
@@ -59,13 +68,15 @@ final class BulkDiscount extends Promo {
 
         // quantity over threshold
         $quantity = $item->getQuantity();
-        if ($quantity < $subject->getUnitsInBulk()) {
+        $threshold = $subject->getUnitsInBulk();
+        if ($quantity < $threshold) {
             return 0;
         }
+
         // calculate discount amount
-        $threshold = $subject->getUnitsInBulk();
-        $quantityInPromo = floor($quantity / $threshold);
-        return $quantity * $subject->getPrice() - $quantityInPromo * $subject->getPriceInBulk();
+        $quantityInPromo = floor($quantity / $threshold) * $threshold;
+        $priceInBulkPerUnit = $subject->getPriceInBulk() / $threshold;
+        return $quantityInPromo * ($subject->getPrice() - $priceInBulkPerUnit);
     }
 
 }

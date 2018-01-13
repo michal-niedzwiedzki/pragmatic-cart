@@ -22,6 +22,11 @@ abstract class Promo {
         $this->description = $description;
     }
 
+    /**
+     * Return promo description
+     *
+     * @return string
+     */
     public function getDescription() {
         return $this->description;
     }

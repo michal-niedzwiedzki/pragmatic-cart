@@ -92,6 +92,7 @@ final class LineItem implements Quote {
     }
 
     protected function calculate() {
+        $this->calculated = true;
         $this->applicablePromos = [];
         $this->discount = 0;
         foreach ($this->availablePromos as $promo) {
@@ -101,7 +102,6 @@ final class LineItem implements Quote {
                 $this->discount += $discount;
             }
         }
-        $this->calculated = true;
     }
 
 }
