@@ -1,6 +1,8 @@
 <?php
 
-namespace Epsi\PragmaticCart\Store;
+namespace Epsi\PragmaticCart\Checkout;
+
+use \Epsi\PragmaticCart\Store\Product;
 
 /**
  * Shopping cart
@@ -12,7 +14,7 @@ namespace Epsi\PragmaticCart\Store;
  *
  * @author Michał Rudnicki <michal@epsi.pl>
  */
-final class Cart implements Promoable {
+final class Cart implements Quote {
 
     /**
      * Line items indexed by product id
@@ -80,7 +82,7 @@ final class Cart implements Promoable {
         if (isset($this->lineItems[$productId])) {
             $this->lineItems[$productId]->modifyQuantityBy($quantity);
         } else {
-            $this->lineItems[$productId] = new LineItem($product, $quantity);
+            $this->lineItems[$productId] = new LineItem($product, $quantity, $this->availablePromos);
         }
         return $this;
     }
@@ -149,4 +151,28 @@ final class Cart implements Promoable {
         $this->calculated = true;
     }
 
+    public function getReceipt() {
+        $receipt = [];
+        $i = 0;
+        foreach ($this->lineItems as $lineItem) {
+            $p = [];
+            foreach ($lineItem->getApplicablePromos() as $promo) {
+                $p[] = [
+                    "description" => $promo->getDescription(),
+                    "discount" => -$promo->getLineItemDiscount($lineItem),
+                ];
+            }
+            $receipt[] = [
+                "item" => ++$i,
+                "name" => $lineItem->getProduct()->getName(),
+                "price" => $lineItem->getProduct()->getPrice(),
+                "qty" => $lineItem->getQuantity(),
+                "amount" => $lineItem->getAmount(),
+                "discount" => -$lineItem->getDiscount(),
+                "effective" => $lineItem->getTotal(),
+                "promos" => $p,
+            ];
+        }
+        return $receipt;
+    }
 }

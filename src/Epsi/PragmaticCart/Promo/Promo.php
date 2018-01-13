@@ -2,6 +2,9 @@
 
 namespace Epsi\PragmaticCart\Promo;
 
+use \Epsi\PragmaticCart\Checkout\LineItem;
+use \Epsi\PragmaticCart\Checkout\Cart;
+
 abstract class Promo {
 
     /**
@@ -39,7 +42,7 @@ abstract class Promo {
      * @param \Epsi\PragmaticCart\Checkout\Cart $cart to discount
      * @return int
      */
-    public function getCartDiscount(Quote $subject) {
+    public function getCartDiscount(Cart $cart) {
         return 0;
     }
 

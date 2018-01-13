@@ -2,7 +2,9 @@
 
 namespace Epsi\PragmaticCart\Checkout;
 
-final class LineItem implements Promoable {
+use \Epsi\PragmaticCart\Store\Product;
+
+final class LineItem implements Quote {
 
     /**
      * Product
@@ -68,7 +70,7 @@ final class LineItem implements Promoable {
     }
 
     public function getAmount() {
-        $this->product->getPrice() * $this->quantity;
+        return $this->product->getPrice() * $this->quantity;
     }
 
     public function getDiscount() {
@@ -85,17 +87,17 @@ final class LineItem implements Promoable {
     }
 
     public function getApplicablePromos() {
-        $this->calculated or $this->calculateDiscount();
-        return $this->promos;
+        $this->calculated or $this->calculate();
+        return $this->applicablePromos;
     }
 
     protected function calculate() {
         $this->applicablePromos = [];
         $this->discount = 0;
-        foreach ($this->applicablePromos as $promo) {
+        foreach ($this->availablePromos as $promo) {
             $discount = $promo->getLineItemDiscount($this);
             if ($discount > 0) {
-                $this->promos[] = $promo;
+                $this->applicablePromos[] = $promo;
                 $this->discount += $discount;
             }
         }

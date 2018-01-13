@@ -65,7 +65,7 @@ final class Catalog {
             if (!is_array($p)) {
                 throw new Exception("Array expected at position #{$i} in {$file}", Exception::E_IMPORT);
             }
-            $product = Product::import($item);
+            $product = Product::import($p);
             $productId = $product->getId();
             $this->products[$productId] = $product;
         }

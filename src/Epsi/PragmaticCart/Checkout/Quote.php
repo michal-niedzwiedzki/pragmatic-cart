@@ -1,6 +1,6 @@
 <?php
 
-namespace \Epsi\PragmaticCart\Checkout;
+namespace Epsi\PragmaticCart\Checkout;
 
 interface Quote {
 

@@ -2,6 +2,9 @@
 
 namespace Epsi\PragmaticCart\Promo;
 
+use \Epsi\PragmaticCart\Checkout\LineItem;
+use \Epsi\PragmaticCart\Store\Product;
+
 /**
  * Promo to apply special price if quantity over threshold
  *
