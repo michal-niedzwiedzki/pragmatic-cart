@@ -12,6 +12,8 @@ abstract class Promo {
 
     /**
      * Constructor
+     *
+     * @param string $description to be shown on receipt
      */
     public function __construct($description) {
         $this->description = $description;

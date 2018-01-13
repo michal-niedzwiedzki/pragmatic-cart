@@ -12,16 +12,43 @@ namespace Epsi\PragmaticCart\Store;
  *
  * @author Michał Rudnicki <michal@epsi.pl>
  */
-final class Cart implements IteratorAggregate {
-
-    const K_PRODUCT = 0;
-    const K_QUANTITY = 1;
+final class Cart implements Promoable {
 
     /**
      * Line items indexed by product id
      * @var \Epsi\PragmaticCart\Checkout\LineItem<int>[]
      */
     private $lineItems = [];
+
+    /**
+     * Calculated purchase amount
+     * @var int
+     */
+    private $amount = 0;
+
+    /**
+     * Calculated discount amount
+     * @var int
+     */
+    private $discount = 0;
+
+    /**
+     * List of available promotions
+     * @var \Epsi\PragmaticCart\Promo\Promo[]
+     */
+    private $availablePromos = [];
+
+    /**
+     * List of applicable promotions
+     * @var \Epsi\PragmaticCart\Promo\Promo[]
+     */
+    private $applicablePromos = [];
+
+    /**
+     * Flag if discount calculation already performed
+     * @var int
+     */
+    private $calculated = false;
 
     /**
      * Constructor
@@ -73,6 +100,53 @@ final class Cart implements IteratorAggregate {
             unset($this->lineItems[$productId]);
         }
         return $this;
+    }
+
+    public function getAmount() {
+        $this->calculated or $this->calculate();
+        return $this->amount;
+    }
+
+    public function getDiscount() {
+        $this->calculated or $this->calculate();
+
+    }
+
+    public function getTotal() {
+        $this->calculated or $this->calculate();
+        return $this->amount - $this->discount;
+    }
+
+    public function getAvailablePromos() {
+        return $this->availablePromos;
+    }
+
+    public function getApplicablePromos() {
+        $this->calculated or $this->calculateDiscount();
+        return $this->applicablePromos;
+    }
+
+    protected function calculate() {
+        // collect line item amounts to calculate amount
+        $this->amount = 0;
+        foreach ($this->lineItems as $lineItem) {
+            $this->amount += $lineItem->getTotalAmount();
+        }
+        $this->grandTotal = $this->purchaseTotal;
+
+        // apply purchase promos to calculate discount
+        $this->applicablePromos = [];
+        $this->discount = 0;
+        foreach ($this->availablePromos as $promo) {
+            $discount = $promo->getCartDiscount($this);
+            if ($discount > 0) {
+                $this->applicablePromos[] = $promo;
+                $this->grandTotal = ($discount < $this->grandTotal) ? ($this->grandTotal - $discount) : 0;
+            }
+        }
+
+        // set flag to prevent needless recalculation
+        $this->calculated = true;
     }
 
 }

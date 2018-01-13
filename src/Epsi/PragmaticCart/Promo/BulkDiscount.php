@@ -15,11 +15,15 @@ final class BulkDiscount extends Promo {
      */
     private $target;
 
+    /**
+     * Flag to apply promo only if the only promo on line item
+     */
     private $exclusive;
 
     /**
      * Constructor
      *
+     * @param string $description to be shown on receipt
      * @param \Epsi\PragmaticCart\Store\Product $target product the promo applies to
      * @param boolean $exclusive flag to make the promo only available as the only one on a product
      */
@@ -30,44 +34,35 @@ final class BulkDiscount extends Promo {
     }
 
     /**
-     * Return whether promo is eligible on given product
-     *
-     * @param \Epsi\PragmaticCart\Checkout\Quote $quote to work on
-     * @param \Epsi\PragmaticCart\Store\Product $subject being under price review
-     * @return boolean
-     */
-    public function isEligibleOnProduct(Quote $quote, Product $subject) {
-        // target product must match subject
-        if ($this->target != $subject) {
-            return false;
-        }
-        // if exclusive no other promo allowed on subject
-        if ($this->exclusive and !empty($quote->getPromos($subject))) {
-            return false;
-        }
-        // quantity over threshold
-        if ($quote->getQuantity($subject) < $subject->getUnitsInBulk()) {
-            return false;
-        }
-        return true;
-    }
-
-    /**
-     * Return updated total price for line item with given product
+     * Return discount amount for given line item
      *
      * Will only apply special price for multitudes of threshold quantity.
      * For the remainder regular price will be charged.
      *
-     * @param \Epsi\PragmaticCart\Checkout\Quote $quote to work on
-     * @param \Epsi\PragmaticCart\Store\Product $subject being under price review
+     * @param \Epsi\PragmaticCart\Checkout\LineItem $item
      * @return int
      */
-    public function getLineItemTotalForProduct(Quote $quote, Product $subject) {
-        $quantityInTotal = $quote->getQuantity($subject);
+    public function getLineItemDiscount(LineItem $item) {
+        // target product must match subject
+        $subject = $item->getProduct();
+        if ($this->target != $subject) {
+            return 0;
+        }
+
+        // if exclusive no other promo allowed on subject
+        if ($this->exclusive and !empty($item->getApplicablePromos())) {
+            return 0;
+        }
+
+        // quantity over threshold
+        $quantity = $item->getQuantity();
+        if ($quantity < $subject->getUnitsInBulk()) {
+            return 0;
+        }
+        // calculate discount amount
         $threshold = $subject->getUnitsInBulk();
-        $quantityInPromo = floor($quantityInTotal / $threshold);
-        $quantityInFull = $quantityInTotal - $quantityInPromo;
-        return ceil($quantityInPromo * $subject->getPriceInBulk() + $quantityInFull * $subject->getPrice());
+        $quantityInPromo = floor($quantity / $threshold);
+        return $quantity * $subject->getPrice() - $quantityInPromo * $subject->getPriceInBulk();
     }
 
 }

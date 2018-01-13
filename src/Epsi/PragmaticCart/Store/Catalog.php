@@ -13,33 +13,25 @@ namespace Epsi\PragmaticCart\Store;
 final class Catalog {
 
     /**
-     * Singleton instance
-     * @var \Epsi\PragmaticCart\Store\Catalog
-     */
-    private static $instance;
-
-    /**
      * Collection of products in catalog
      * @var \Epsi\PragmaticCart\Store\Product[]
      */
     private $products = [];
 
     /**
-     * Singleton constructor
+     * Return all products in catalog
+     *
+     * @return \Epsi\PragmaticCart\Store\Product[]
      */
-    private function __construct() {
-
-    }
-
-    public static function getInstance() {
-        self::$instance or self::$instance = new Catalog();
-        return self::$instance;
-    }
-
     public function getProducts() {
         return $this->products;
     }
 
+    /**
+     * Return product by its id
+     *
+     * @return \Epsi\PragmaticCart\Store\Product
+     */
     public function getProductById($productId) {
         if (!isset($this->products[$productId])) {
             throw new Exception("Product {$productId} not in catalog", Exception::E_CATALOG);
@@ -47,6 +39,14 @@ final class Catalog {
         return $this->products[$productId];
     }
 
+    /**
+     * Load products from file and return self
+     *
+     * Will not erase previously loaded products,
+     * but may overwrite those with conflicting product id.
+     *
+     * @return \Epsi\PragmaticCart\Store\Catalog
+     */
     public function load($file) {
         // check if catalog file exists
         if (!is_readable($file)) {
@@ -72,6 +72,11 @@ final class Catalog {
         return $this;
     }
 
+    /**
+     * Save products into file and return self
+     *
+     * @return \Epsi\PragmaticCart\Store\Catalog
+     */
     public function save($file) {
         $products = [];
         foreach ($this->products as $product) {
@@ -82,6 +87,11 @@ final class Catalog {
         return $this;
     }
 
+    /**
+     * Remove all products from catalog and return self
+     *
+     * @return \Epsi\PragmaticCart\Store\Catalog
+     */
     public function purge() {
         $this->products = [];
         return $this;

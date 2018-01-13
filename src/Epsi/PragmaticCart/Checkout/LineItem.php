@@ -4,28 +4,53 @@ namespace Epsi\PragmaticCart\Checkout;
 
 final class LineItem implements Promoable {
 
+    /**
+     * Product
+     * @var \Epsi\PragmaticCart\Store\Product
+     */
     private $product;
+
+    /**
+     * Quantity of product in cart
+     * @var int
+     */
     private $quantity;
-    private $promos = [];
+
+    /**
+     * Calculated discount amount
+     * @var int
+     */
     private $discount = 0;
+
+    /**
+     * List of available promotions
+     * @var \Epsi\PragmaticCart\Promo\Promo[]
+     */
+    private $availablePromos = [];
+
+    /**
+     * List of applicable promotions
+     * @var \Epsi\PragmaticCart\Promo\Promo[]
+     */
+    private $applicablePromos = [];
+
+    /**
+     * Flag if discount calculation already performed
+     * @var int
+     */
     private $calculated = false;
 
-    public function __construct(Product $product, $quantity) {
+    /**
+     * Constructor
+     *
+     * @param \Epsi\PragmaticCart\Store\Product $product
+     * @param int $quantity of product
+     * @param \Epsi\PragmaticCart\Promo\Promo[] $promos available
+     */
+    public function __construct(Product $product, $quantity, array $promos = []) {
         $this->product = $product;
         $this->quantity = $quantity;
-    }
-
-    public function calculateDiscount() {
-        $this->promos = [];
-        $this->discount = 0;
-        foreach (Promo::getRegisteredPromos() as $promo) {
-            $discount = $promo->getLineItemDiscount()
-            if ($discount > 0) {
-                $this->promos[] = $promo;
-                $this->discount += $discount;
-            }
-        }
-        $this->calculated = true;
+        $this->availablePromos = $promos;
     }
 
     public function getProduct() {
@@ -36,18 +61,45 @@ final class LineItem implements Promoable {
         return $this->quantity;
     }
 
-    public function getPromos() {
+    public function modifyQuantityBy($quantity) {
+        $this->quantity += $quantity;
+        $this->calculated = false;
+        return $this;
+    }
+
+    public function getAmount() {
+        $this->product->getPrice() * $this->quantity;
+    }
+
+    public function getDiscount() {
+        $this->calculated or $this->calculate();
+        return $this->discount;
+    }
+
+    public function getTotal() {
+        return $this->getAmount() - $this->getDiscount();
+    }
+
+    public function getAvailablePromos() {
+        return $this->availablePromos;
+    }
+
+    public function getApplicablePromos() {
         $this->calculated or $this->calculateDiscount();
         return $this->promos;
     }
 
-    public function getDiscountAmount() {
-        $this->calculated or $this->calculateDisount();
-        return $this->discount;
-    }
-
-    public function getTotalAmount() {
-        return $this->product->getPrice() * $this->quantity - $this->getDiscount();
+    protected function calculate() {
+        $this->applicablePromos = [];
+        $this->discount = 0;
+        foreach ($this->applicablePromos as $promo) {
+            $discount = $promo->getLineItemDiscount($this);
+            if ($discount > 0) {
+                $this->promos[] = $promo;
+                $this->discount += $discount;
+            }
+        }
+        $this->calculated = true;
     }
 
 }

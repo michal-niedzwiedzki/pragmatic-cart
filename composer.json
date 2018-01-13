@@ -1,0 +1,17 @@
+{
+    "name": "epsi/pragmaticcart",
+    "type": "library",
+    "require-dev": {
+        "phpunit/phpunit": "^6.5"
+    },
+    "authors": [
+        {
+            "name": "Michał Rudnicki",
+            "email": "michal@epsi.pl"
+        }
+    ],
+    "autoload": {
+        "psr-4": { "Epsi\\PragmaticCart\\": "src/Epsi/PragmaticCart" }
+    },
+    "require": {}
+}
