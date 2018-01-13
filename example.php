@@ -28,7 +28,8 @@ $promos = [
 
 // create cart initiated with available promotions and throw in some products
 $cart = new Cart($promos);
-$cart->add($catalog->getProductById("A"), 4);
+$cart->add($catalog->getProductById("A"), 3);
+$cart->add($catalog->getProductById("A"), 1);
 $cart->add($catalog->getProductById("B"), 3);
 $cart->add($catalog->getProductById("C"), 200);
 

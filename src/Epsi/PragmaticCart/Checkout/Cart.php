@@ -10,7 +10,7 @@ use \Epsi\PragmaticCart\Store\Product;
  * Stores information about line items in cart (products and quantities).
  * Can add/remove products to/from cart.
  * Stores information about available promotions.
- * Can generate a quote based on cart contents and applicable promotions.
+ * Can provide a quote based on cart contents and applicable promotions.
  *
  * @author Michał Rudnicki <michal@epsi.pl>
  */

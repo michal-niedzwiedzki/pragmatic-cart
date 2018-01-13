@@ -4,6 +4,14 @@ namespace Epsi\PragmaticCart\Checkout;
 
 use \Epsi\PragmaticCart\Store\Product;
 
+/**
+ * Line item in cart
+ *
+ * Holds purchased product along with its quantity.
+ * Can provide a quote based on product, quantity and applicable promotions.
+ *
+ * @author Michał Rudnicki <michal@epsi.pl>
+ */
 final class LineItem implements Quote {
 
     /**

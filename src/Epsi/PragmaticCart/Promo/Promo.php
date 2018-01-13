@@ -5,6 +5,14 @@ namespace Epsi\PragmaticCart\Promo;
 use \Epsi\PragmaticCart\Checkout\LineItem;
 use \Epsi\PragmaticCart\Checkout\Cart;
 
+/**
+ * Abstract promo
+ *
+ * Has a description to be shown on receipt.
+ * Can calculate discount for line item as well as entire cart.
+ *
+ * @author Michał Rudnicki <michal@epsi.pl>
+ */
 abstract class Promo {
 
     /**

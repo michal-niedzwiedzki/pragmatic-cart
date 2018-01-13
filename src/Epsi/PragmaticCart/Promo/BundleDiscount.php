@@ -6,7 +6,7 @@ use \Epsi\PragmaticCart\Checkout\Cart;
 use \Epsi\PragmaticCart\Store\Product;
 
 /**
- *
+ * Promo to apply special price for bundled products
  *
  * @author Michał Rudnicki <michal@epsi.pl>
  */

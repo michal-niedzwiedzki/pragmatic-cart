@@ -5,7 +5,7 @@ namespace Epsi\PragmaticCart\Promo;
 use \Epsi\PragmaticCart\Checkout\Cart;
 
 /**
- *
+ * Promo to apply discount percent for purchase over threshold
  *
  * @author Michał Rudnicki <michal@epsi.pl>
  */

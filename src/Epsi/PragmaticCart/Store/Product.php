@@ -11,6 +11,11 @@ namespace Epsi\PragmaticCart\Store;
  */
 class Product {
 
+    const K_NAME = "name";
+    const K_PRICE = "price";
+    const K_UNITS_IN_BULK = "unit";
+    const K_PRICE_IN_BULK = "specialPrice";
+
     private $name;
     private $price;
     private $unitsInBulk;
@@ -44,15 +49,20 @@ class Product {
     }
 
     public static function import(array $p) {
-        return new Product($p["name"], $p["price"], $p["unit"], $p["specialPrice"]);
+        return new Product(
+            $p[self::K_NAME],
+            $p[self::K_PRICE],
+            $p[self::K_UNITS_IN_BULK],
+            $p[self::K_PRICE_IN_BULK]
+        );
     }
 
     public function export() {
         return [
-            "name" => $this->name,
-            "price" => $this->price,
-            "unit" => $this->unitsInBulk,
-            "specialPrice" => $this->priceInBulk,
+            self::K_NAME => $this->name,
+            self::K_PRICE => $this->price,
+            self::K_UNITS_IN_BULK => $this->unitsInBulk,
+            self::K_PRICE_IN_BULK => $this->priceInBulk,
         ];
     }
 
