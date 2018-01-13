@@ -7,7 +7,15 @@
 
 ## Running
 
-Example use case is provided in file `example.php`. To run it simply enter `php example.php`.
+Example use case is provided in file _example.php_. To run it simply enter `php example.php`.
+
+The script will produce a receipt in JSON format. Top level nodes are:
+- _items_ - for line items in cart, each item can have promotions that apply to it,
+- _promos_ - for promotions that apply to entire cart,
+- _amount_ - partial total not including cart promotions,
+- _discount_ - discount as a result of applicable promotions,
+- _total_ - final amount to pay.
+
 Feel free to play with example file changing product and promo settings at will.
 
 ## Testing
