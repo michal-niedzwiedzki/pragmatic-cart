@@ -2,26 +2,33 @@
 
 namespace Epsi\PragmaticCart\Store;
 
+use \ArrayAccess;
+
 /**
  * Products catalog
  *
- * Holds collection of products indexed by product id [int => Product]
+ * Holds collection of products indexed by product id.
  * Can save and load to/from persistent storage.
+ *
+ * Implements ArrayAccess interface for easy access to products by id, e.g.:
+ *      $catalog[123]
+ * is equivalent to:
+ *      $catalog->getProductById(123)
  *
  * @author Michał Rudnicki <michal@epsi.pl>
  */
-final class Catalog {
+final class Catalog implements ArrayAccess {
 
     /**
      * Collection of products in catalog
-     * @var \Epsi\PragmaticCart\Store\Product[]
+     * @var \Epsi\PragmaticCart\Store\Product<int>[]
      */
     private $products = [];
 
     /**
      * Return all products in catalog
      *
-     * @return \Epsi\PragmaticCart\Store\Product[]
+     * @return \Epsi\PragmaticCart\Store\Product<int>[]
      */
     public function getProducts() {
         return $this->products;
@@ -37,6 +44,22 @@ final class Catalog {
             throw new Exception("Product {$productId} not in catalog", Exception::E_CATALOG);
         }
         return $this->products[$productId];
+    }
+
+    public function offsetExists($offset) {
+        return isset($this->products[$offset]);
+    }
+
+    public function offsetGet($offset) {
+        return $this->getProductById($offset);
+    }
+
+    public function offsetSet($offset, $value) {
+        throw new Exception("Setting products not permitted", Exception::E_ACCESS);
+    }
+
+    public function offsetUnset($offset) {
+        throw new Exception("Unsetting products not permitted", Exception::E_ACCESS);
     }
 
     /**

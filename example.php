@@ -16,12 +16,12 @@ $catalog->load("var/catalog.json");
 
 // prepare available promotions
 $promos = [
-    new BulkDiscount("Bulk discount", $catalog->getProductById("A"), false),
-    new BulkDiscount("Bulk discount", $catalog->getProductById("B"), false),
-    new BulkDiscount("Bulk discount", $catalog->getProductById("C"), false),
-    new BulkDiscount("Bulk discount", $catalog->getProductById("D"), false),
-    new BundleDiscount("2 items bundle", [$catalog->getProductById("A"), $catalog->getProductById("B")], 10),
-    new BundleDiscount("4 items bundle", [$catalog->getProductById("A"), $catalog->getProductById("B"), $catalog->getProductById("C"), $catalog->getProductById("D")], 30),
+    new BulkDiscount("Bulk discount", $catalog["A"], false),
+    new BulkDiscount("Bulk discount", $catalog["B"], false),
+    new BulkDiscount("Bulk discount", $catalog["C"], false),
+    new BulkDiscount("Bulk discount", $catalog["D"], false),
+    new BundleDiscount("2 items bundle", [$catalog["A"], $catalog["B"]], 10),
+    new BundleDiscount("4 items bundle", [$catalog["A"], $catalog["B"], $catalog["C"], $catalog["D"]], 30),
     new PercentDiscount("Heavy cart discount", 600, 10),
 ];
 // TODO: move manual promo configuration to a config file
