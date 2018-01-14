@@ -7,8 +7,8 @@ use \Epsi\PragmaticCart\Store\Product;
 /**
  * Line item in cart
  *
- * Holds purchased product along with its quantity.
- * Can provide a quote based on product, quantity and applicable promotions.
+ * Holds reference to purchased product along with its quantity.
+ * Can provide a quote based on product, quantity and available promotions.
  *
  * @author Michał Rudnicki <michal@epsi.pl>
  */
@@ -72,7 +72,11 @@ final class LineItem implements Quote {
     }
 
     public function modifyQuantityBy($quantity) {
-        $this->quantity += $quantity;
+        if ($this->quantity + $quantity > 0) {
+            $this->quantity += $quantity;
+        } else {
+            $this->quantity = 0;
+        }
         $this->calculated = false;
         return $this;
     }
@@ -103,12 +107,20 @@ final class LineItem implements Quote {
         $this->calculated = true;
         $this->applicablePromos = [];
         $this->discount = 0;
+
+        // apply promos to calculate discount
         foreach ($this->availablePromos as $promo) {
             $discount = $promo->getLineItemDiscount($this);
             if ($discount > 0) {
                 $this->applicablePromos[] = $promo;
                 $this->discount += $discount;
             }
+        }
+
+        // cap discount to amount level
+        $amount = $this->getAmount();
+        if ($this->discount > $amount) {
+            $this->discount = $amount;
         }
     }
 
