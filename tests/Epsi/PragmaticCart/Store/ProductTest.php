@@ -18,6 +18,7 @@ class ProductTest extends TestCase {
      * @covers ::__construct
      * @covers ::getId
      * @covers ::getName
+     * @covers ::getPrice
      * @covers ::getUnitsInBulk
      * @covers ::getPriceInBulk
      */

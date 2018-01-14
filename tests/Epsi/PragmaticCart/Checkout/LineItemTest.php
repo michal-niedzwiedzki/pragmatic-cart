@@ -3,9 +3,8 @@
 namespace Test\Epsi\PragmaticCart\Checkout;
 
 use \PHPUnit\Framework\TestCase;
-use \Epsi\PragmaticCart\Checkout\LineItem;
 use \Epsi\PragmaticCart\Store\Product;
-use \Epsi\PragmaticCart\Promo\PercentDiscount;
+use \Epsi\PragmaticCart\Checkout\LineItem;
 
 /**
  * Test of line item
@@ -22,9 +21,12 @@ class LineItemTest extends TestCase {
      * @covers ::getQuantity
      * @covers ::getAvailablePromos
      */
-    public function constructor_initializes_product_properties() {
+    public function constructor_initializes_product_quantity_and_available_promos() {
+        $promo = $this->getMockBuilder('Epsi\PragmaticCart\Promo\Promo')
+            ->disableOriginalConstructor()
+            ->getMockForAbstractClass();
+        $promos = [$promo, $promo];
         $product = new Product("FOO", 1, 2, 3);
-        $promos = [new PercentDiscount("", 100, 1)];
         $item = new LineItem($product, 5, $promos);
         $this->assertSame($product, $item->getProduct());
         $this->assertEquals(5, $item->getQuantity());
@@ -71,6 +73,8 @@ class LineItemTest extends TestCase {
      * @test
      * @covers ::getDiscount
      * @covers ::calculate
+     * @covers ::getAvailablePromos
+     * @covers ::getApplicablePromos
      */
     public function getDiscount_returns_zero_when_no_applicable_promos() {
         // mock promos
@@ -105,6 +109,8 @@ class LineItemTest extends TestCase {
      * @test
      * @covers ::getDiscount
      * @covers ::calculate
+     * @covers ::getAvailablePromos
+     * @covers ::getApplicablePromos
      */
     public function getDiscount_returns_discount_when_promos_apply() {
         // mock promos
@@ -167,7 +173,9 @@ class LineItemTest extends TestCase {
 
     /**
      * @test
+     * @covers ::getAmount
      * @covers ::getDiscount
+     * @covers ::getTotal
      * @covers ::calculate
      */
     public function getTotal_returns_amount_reduced_by_discount() {
