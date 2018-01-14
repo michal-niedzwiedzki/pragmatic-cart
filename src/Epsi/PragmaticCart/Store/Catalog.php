@@ -110,14 +110,4 @@ final class Catalog implements ArrayAccess {
         return $this;
     }
 
-    /**
-     * Remove all products from catalog and return self
-     *
-     * @return \Epsi\PragmaticCart\Store\Catalog
-     */
-    public function purge() {
-        $this->products = [];
-        return $this;
-    }
-
 }
