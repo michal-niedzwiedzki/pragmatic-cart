@@ -83,7 +83,7 @@ final class Cart implements Quote {
      *
      * @param \Epsi\PagmaticCart\Store\Product
      * @param int $quantity
-     * @return Epsi\PragmaticCart\Store\Cart
+     * @return \Epsi\PragmaticCart\Store\Cart
      */
     public function add(Product $product, $quantity) {
         $productId = $product->getId();
@@ -101,7 +101,7 @@ final class Cart implements Quote {
      *
      * @param \Epsi\PagmaticCart\Store\Product
      * @param int $quantity
-     * @return Epsi\PragmaticCart\Store\Cart
+     * @return \Epsi\PragmaticCart\Store\Cart
      */
     public function remove(Product $product, $quantity) {
         $productId = $product->getId();

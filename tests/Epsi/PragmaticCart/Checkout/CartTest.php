@@ -21,7 +21,7 @@ class CartTest extends TestCase {
      * @covers ::getAvailablePromos
      */
     public function constructor_initializes_available_promos() {
-        $promo = $this->getMockBuilder('Epsi\PragmaticCart\Promo\Promo')
+        $promo = $this->getMockBuilder('\Epsi\PragmaticCart\Promo\Promo')
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
         $promos = [$promo, $promo];
@@ -37,7 +37,7 @@ class CartTest extends TestCase {
      * @covers ::getLineItems
      */
     public function add_accumulates_remove_subtracts_getQuantity_counts_and_getLineItems_returns_them() {
-        $promo = $this->getMockBuilder('Epsi\PragmaticCart\Promo\Promo')
+        $promo = $this->getMockBuilder('\Epsi\PragmaticCart\Promo\Promo')
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
         $promos = [$promo, $promo];
@@ -87,7 +87,7 @@ class CartTest extends TestCase {
      * @covers ::getLineItems
      */
     public function add_passes_down_product_quantity_and_available_promos() {
-        $promo = $this->getMockBuilder('Epsi\PragmaticCart\Promo\Promo')
+        $promo = $this->getMockBuilder('\Epsi\PragmaticCart\Promo\Promo')
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
         $promos = [$promo, $promo];
@@ -129,7 +129,7 @@ class CartTest extends TestCase {
      * @covers ::getApplicablePromos
      */
     public function getDiscount_getTotal_do_the_math_getApplicablePromos_returns_promos_that_apply() {
-        $promo1 = $this->getMockBuilder('Epsi\PragmaticCart\Promo\Promo')
+        $promo1 = $this->getMockBuilder('\Epsi\PragmaticCart\Promo\Promo')
             ->disableOriginalConstructor()
             ->setMethods(["getLineItemDiscount", "getCartDiscount"])
             ->getMockForAbstractClass();
@@ -139,7 +139,7 @@ class CartTest extends TestCase {
         $promo1->expects($this->once())
             ->method("getCartDiscount")
             ->will($this->returnValue(0)); // no cart discount
-        $promo2 = $this->getMockBuilder('Epsi\PragmaticCart\Promo\Promo')
+        $promo2 = $this->getMockBuilder('\Epsi\PragmaticCart\Promo\Promo')
             ->disableOriginalConstructor()
             ->setMethods(["getLineItemDiscount", "getCartDiscount"])
             ->getMockForAbstractClass();
