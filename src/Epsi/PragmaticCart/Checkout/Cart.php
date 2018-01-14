@@ -92,6 +92,7 @@ final class Cart implements Quote {
         } else {
             $this->lineItems[$productId] = new LineItem($product, $quantity, $this->availablePromos);
         }
+        $this->calculated = false;
         return $this;
     }
 
@@ -109,6 +110,7 @@ final class Cart implements Quote {
         } else {
             unset($this->lineItems[$productId]);
         }
+        $this->calculated = false;
         return $this;
     }
 

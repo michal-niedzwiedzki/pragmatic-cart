@@ -38,6 +38,20 @@ final class BundleDiscount extends Promo {
     }
 
     /**
+     * Return promo description
+     *
+     * @return string
+     */
+    public function getDescription() {
+        $productNames = [];
+        foreach ($this->products as $product) {
+            $productNames[] = $product->getName();
+        }
+        $namesList = implode("+", $productNames);
+        return "{$this->description} ({$namesList} for {$this->discount} less)";
+    }
+
+    /**
      * Return discount amount for entire cart
      *
      * @param \Epsi\PragmaticCart\Checkout\Cart $cart to discount

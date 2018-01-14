@@ -59,7 +59,7 @@ final class PercentDiscount extends Promo {
         }
 
         // apply discount
-        return $amount * $this->percent / 100;
+        return floor($amount * $this->percent / 100);
     }
 
 }

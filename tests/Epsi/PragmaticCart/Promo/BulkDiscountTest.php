@@ -71,7 +71,7 @@ class BulkDiscountTest extends TestCase {
      * @test
      * @covers ::getLineItemDiscount
      */
-    public function getLineItemDiscount_returns_nonzero_on_all_conditions_met() {
+    public function getLineItemDiscount_returns_discount_when_all_conditions_met() {
         $target = new Product(1, 2, 3, 4);
         $promo = new BulkDiscount("bulk discount", $target, false);
         $this->assertEquals(0, $promo->getLineItemDiscount(new LineItem($target, 1, [$promo])));
