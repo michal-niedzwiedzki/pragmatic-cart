@@ -21,7 +21,7 @@ class Product {
     private $unitsInBulk;
     private $priceInBulk;
 
-    private function __construct($name, $price, $unitsInBulk = null, $priceInBulk = null) {
+    public function __construct($name, $price, $unitsInBulk = null, $priceInBulk = null) {
         $this->name = $name;
         $this->price = $price;
         $this->unitsInBulk = $unitsInBulk;

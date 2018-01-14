@@ -19,7 +19,7 @@ abstract class Promo {
      * Promo description to be shown on receipt
      * @var string
      */
-    protected $description;
+    protected $description = "";
 
     /**
      * Constructor

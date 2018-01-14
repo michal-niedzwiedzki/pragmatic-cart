@@ -62,10 +62,10 @@ final class BulkDiscount extends Promo {
         }
 
         // if exclusive no other promo allowed on subject
-        if ($this->exclusive and !empty($item->getApplicablePromos())) {
+        if ($this->exclusive and count($item->getApplicablePromos()) > 0) {
             return 0;
         }
-
+        
         // quantity over threshold
         $quantity = $item->getQuantity();
         $threshold = $subject->getUnitsInBulk();
@@ -76,7 +76,7 @@ final class BulkDiscount extends Promo {
         // calculate discount amount
         $quantityInPromo = floor($quantity / $threshold) * $threshold;
         $priceInBulkPerUnit = $subject->getPriceInBulk() / $threshold;
-        return $quantityInPromo * ($subject->getPrice() - $priceInBulkPerUnit);
+        return floor($quantityInPromo * ($subject->getPrice() * $threshold - $subject->getPriceInBulk()) / $threshold);
     }
 
 }

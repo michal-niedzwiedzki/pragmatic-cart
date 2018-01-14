@@ -2,7 +2,7 @@
 
 ## Prerequisites
 
-1. Get a command line PHP interpreter. In Ubuntu this can be installed by typing `sudo apt-get install php-cli`.
+1. Get a command line PHP interpreter. In Ubuntu this can be installed with `sudo apt-get install php-cli`.
 2. Generate autoloader: `lib/composer dump-autoload`.
 
 ## Running
@@ -20,5 +20,6 @@ Feel free to play with example file changing product and promo settings at will.
 
 ## Testing
 
-1. Install PHPUnit: `lib/composer install`.
-2. Run unit tests: `vendor/bin/phpunit`.
+1. Make sure you have _XDebug_ installed if you want to produce code coverage report. In Ubuntu this is easily done with `sudo apt-get install php-xdebug`.
+2. Install PHPUnit: `lib/composer install`.
+3. Run unit tests: `vendor/bin/phpunit`.

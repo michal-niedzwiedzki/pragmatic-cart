@@ -57,7 +57,7 @@ final class LineItem implements Quote {
      * @param int $quantity of product
      * @param \Epsi\PragmaticCart\Promo\Promo[] $promos available
      */
-    public function __construct(Product $product, $quantity, array $promos = []) {
+    public function __construct(Product $product, $quantity, array $promos) {
         $this->product = $product;
         $this->quantity = $quantity;
         $this->availablePromos = $promos;
